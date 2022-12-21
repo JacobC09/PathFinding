@@ -57,7 +57,7 @@ void DrawUI() {
     rlImGuiBegin();
 
     bool open = true;
-    ImGui::Begin("Path Finding Showcase", &open);
+    ImGui::Begin("Path Finding", &open);
 
     ImGui::SliderInt("Grid Size", &gridSize, screenWidth / 64 + 1, screenWidth / 16 + 1);
 
