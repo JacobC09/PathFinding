@@ -10,6 +10,7 @@ add_executable(game
     src/main.cpp
 )
 
+target_precompile_headers(game PUBLIC src/include/pch.h)
 target_link_libraries(game PRIVATE raylib rlImGui)
 target_include_directories(game PRIVATE src/include)
 add_compile_options(-Wall -std=c++17)

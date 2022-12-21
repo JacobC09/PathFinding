@@ -1,5 +1,5 @@
-#include "raylib.h"
-#include "raymath.h"
+#include "pch.h"
+#include "debug.h"
 #include "imgui.h"
 #include "rlImGui.h"
 
@@ -7,9 +7,10 @@ const int screenWidth = 1020;
 const int screenHeight = 700;
 const Color darkValues[4] = {{0, 0, 0, 255}, {14, 14, 14, 255}, {32, 32, 32, 255}, {64, 64, 64, 255}};
 
+Vector2 scroll;
 int gridSize;
 bool isDragging;
-Vector2 dragStart;
+Vector2 dragginPos;
 Rectangle windowLoc;
 
 void Initialize();
@@ -35,19 +36,31 @@ int main(int argc, char* argv[]) {
 }
 
 void Initialize() {
+    gridSize = 24;
     windowLoc = {0, 0, 0, 0};
-    gridSize = screenWidth / 32;
     isDragging = false;
+    scroll = {0, 0};
+
 }
 
 void UpdateFrame() {
+    Vector2 mp = GetMousePosition();
+
     BeginDrawing();
         ClearBackground(darkValues[1]);
         DrawGrid();
         DrawUI();
 
-        if (CheckCollisionPointRec(GetMousePosition(), windowLoc)) {
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !CheckCollisionPointRec(GetMousePosition(), windowLoc)) {
+            if (isDragging) {
+                scroll.x -= mp.x - dragginPos.x;
+                scroll.y -= mp.y - dragginPos.y;
+            }
 
+            isDragging = true;
+            dragginPos = GetMousePosition();
+        } else {
+            isDragging = false;
         }
         
     EndDrawing();
@@ -59,10 +72,6 @@ void DrawUI() {
     bool open = true;
     ImGui::Begin("Path Finding", &open);
 
-    ImGui::SliderInt("Grid Size", &gridSize, screenWidth / 64 + 1, screenWidth / 16 + 1);
-
-    if (ImGui::Button("Start"));
-
     ImVec2 pos = ImGui::GetWindowPos();
     ImVec2 size = ImGui::GetWindowSize();
     windowLoc = {pos.x, pos.y, size.x, size.y};
@@ -72,12 +81,10 @@ void DrawUI() {
 }
 
 void DrawGrid() {
-    for (int index = 0; index <= gridSize; index++) {
-        int pos = screenWidth * (float) index / gridSize;
-
-        if (pos < screenWidth)
-            DrawLine(pos, 0, pos, screenHeight, darkValues[2]);
-        if (pos < screenHeight)
-            DrawLine(0, pos, screenWidth, pos, darkValues[2]);
+    for (int x = gridSize - ((int) scroll.x % gridSize); x < screenWidth; x+=gridSize) {
+        DrawLine(x, 0, x, screenHeight, darkValues[2]);
+    }
+    for (int y = gridSize - ((int) scroll.y % gridSize); y < screenHeight; y+=gridSize) {
+        DrawLine(0, y, screenWidth, y, darkValues[2]);
     }
 }
