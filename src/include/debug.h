@@ -18,8 +18,8 @@ inline void print(std::vector<T> vector) {
     std::cout << output << std::endl;
 }
 
-template<typename First, typename ... Strings>
-inline void print(First arg, const Strings&... rest) {
+template<typename First, typename ... Values>
+inline void print(First arg, const Values&... rest) {
     std::cout << arg << " ";
     print(rest...);
 }

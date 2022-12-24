@@ -8,6 +8,7 @@ add_subdirectory(external/rlImGui)
 
 add_executable(game 
     src/main.cpp
+    src/grid.cpp
 )
 
 target_precompile_headers(game PUBLIC src/include/pch.h)
