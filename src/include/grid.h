@@ -4,7 +4,7 @@
 struct Cell {
     int g;
     int f;
-    int originIndex;
+    int parentIndex;
     Vector2 pos;
 };
 
